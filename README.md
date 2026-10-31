@@ -24,14 +24,59 @@ Docker metadata and user-defined host paths.
 - Linux host
 - SSH access to a remote backup destination
 
+## Docker Image
+
+The official image is hosted on GitHub Container Registry:
+
+`ghcr.io/thwcz/docker-backup`
+
+Available tags:
+
+| Tag | Description |
+|---|---|
+| `latest` | Latest published release |
+| `0.1.0` | Initial release |
+| `0.1.1` | Release with OCI image metadata |
+
+Currently published for **Linux ARM64 (aarch64)**.
+
+The image is publicly available and does not require authentication to pull.
+
 ## Installation
 
 1. Download the example Compose file:
 
    `curl -O https://raw.githubusercontent.com/thwcz/docker-backup/main/compose.example.yaml`
 
-2. Adapt the configuration to your environment.
-3. Start the container using `docker compose up -d`.
+2. Rename it to `compose.yaml`:
+
+   `mv compose.example.yaml compose.yaml`
+
+3. Adapt the configuration to your environment.
+4. Make sure the required host paths and SSH credentials are mounted into the container.
+5. Pull the image and start the service:
+
+   ```bash
+   docker compose pull
+   docker compose up -d
+   ```
+
+## Updating
+
+To update to the latest published image:
+
+```bash
+docker compose pull
+docker compose up -d
+```
+
+For reproducible deployments, use a fixed version tag instead of `latest`.
+
+Change the image reference in your Compose file, for example:
+
+`ghcr.io/thwcz/docker-backup:0.1.1`
+
+Then pull and recreate the container.
 
 ## Configuration
 
