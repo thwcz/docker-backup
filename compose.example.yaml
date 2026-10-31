@@ -1,0 +1,45 @@
+services:
+  docker-backup:
+    image: ghcr.io/thwcz/docker-backup:latest
+    container_name: pidocker-backup
+    restart: unless-stopped
+    init: true
+
+    environment:
+      TZ: Europe/Berlin
+
+      BACKUP_CRON_EXPRESSION: "0 2 * * *"
+
+      SSH_HOST: "your-backup-server.example.com"
+      SSH_USER: "backup"
+      SSH_PORT: "22"
+      SSH_REMOTE_PATH: "/path/to/backups"
+
+      SSH_KEY: "/root/.ssh/id_rsa"
+      SSH_KNOWN_HOSTS: "/root/.ssh/known_hosts"
+
+      BACKUP_RETENTION_DAYS: "14"
+      BACKUP_PREFIX: "docker"
+
+      BACKUP_JOBS: |
+        # container | stop | comma-separated host paths
+        pihole|true|/opt/stacks/pihole/compose.yaml,/opt/stacks/pihole/.env,/opt/stacks/pihole/etc-pihole
+        pidocker-backup|false|/opt/backup-manager
+
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+
+      # Docker stack configuration and application data
+      - /opt/stacks/pihole/compose.yaml:/opt/stacks/pihole/compose.yaml:ro
+      - /opt/stacks/pihole/.env:/opt/stacks/pihole/.env:ro
+      - /opt/stacks/pihole/etc-pihole:/opt/stacks/pihole/etc-pihole:ro
+
+      # Backup project itself
+      - /opt/backup-manager:/opt/backup-manager:ro
+
+      # SSH credentials
+      - /home/your-user/.ssh/id_rsa:/root/.ssh/id_rsa:ro
+      - /home/your-user/.ssh/known_hosts:/root/.ssh/known_hosts:ro
+
+      # Logs
+      - ./logs:/var/log/backup

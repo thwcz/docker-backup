@@ -1,0 +1,19 @@
+# Local configuration
+compose.yaml
+.env
+.env.*
+!.env.example
+
+# Logs and backup data
+logs/
+*.log
+*.tar
+*.tar.gz
+*.tgz
+
+# Secrets
+*.pem
+*.key
+id_rsa
+id_ed25519
+known_hosts
